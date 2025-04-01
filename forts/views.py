@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponsePermanentRedirect
+from datetime import datetime
 
 from .models import Fort, Excursion
 from .forms import make_excursion_page
@@ -19,13 +20,13 @@ def excursion(request, name=None):
         data = {}
         for title in set([exc.title for exc in Excursion.objects.all()]):
             data[title] = [
-                { "meet_place": exc.meet_place, "time": exc.time, "count": exc.count }
+                { "id": exc.id, "meet_place": exc.meet_place, "time": exc.time, "count": exc.count }
                 for exc in Excursion.objects.filter(title=title)
             ]
 
     else:
         data = {name: [
-                { "meet_place": exc.meet_place, "time": exc.time, "count": exc.count }
+                { "id": exc.id, "meet_place": exc.meet_place, "time": exc.time, "count": exc.count }
                 for exc in Excursion.objects.filter(title=name)
             ]}
 
@@ -36,7 +37,6 @@ def excursion(request, name=None):
     })
 
 def excursion_make(request, name):
-    
     if request.method == "POST":
         data = make_excursion_page(request.POST)
         if data.is_valid():
@@ -55,7 +55,7 @@ def excursion_make(request, name):
             excursion.count = data.cleaned_data["count"]
 
             excursion.save()
-            return HttpResponsePermanentRedirect("/forts")
+            return HttpResponsePermanentRedirect("/excursion")
         else: return HttpResponse("Incorrect answers")
 
     return render(request, "make.html", {
@@ -63,6 +63,22 @@ def excursion_make(request, name):
         "form": make_excursion_page(), 
         "cookie": "email" in request.COOKIES
     })
+
+def excursion_edit(request, name, id):
+    if request.method == "POST":
+        return excursion_make(request, name)
+    
+    excursion_delete(request, name, id)
+    return excursion_make(request, name)
+
+def excursion_delete(request, name, id):
+    excursion = Excursion.objects.get(
+        id=id,
+        title=name 
+    )
+    excursion.delete()
+
+    return HttpResponsePermanentRedirect("/excursion")
 
 def about(request):
     return render(request, "about.html", {"cookie": "email" in request.COOKIES})

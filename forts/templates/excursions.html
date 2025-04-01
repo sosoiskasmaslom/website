@@ -1,5 +1,4 @@
 {% include "start.html" %}
-
     <main>
         <section id="articles" class="section">
             <div class="container">
@@ -12,9 +11,17 @@
                     <p>Место встречи - {{ excursion.meet_place }}</p>
                     <p>Количество человек - {{ excursion.count }}</p>
                     <p>{{ excursion.time }}</p>
-                    <a href="/excursion/{{ title }}/{{ excursion.time }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    <table>
+                    <a href="/excursion/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
                         Записаться
                     </a>
+                    <a href="/excursion/edit/{{ title }}/{{ excursion.id }}" style="width: 100%; margin: auto 10px; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Изменить
+                    </a>
+                    <a href="/excursion/delete/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Удалить
+                    </a>
+                    </table>
                 </div>
                 {% endfor %}
                 <a href="/excursion/{{ title }}/make">Создать экскурсию</a>

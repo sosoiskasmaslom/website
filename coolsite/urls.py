@@ -31,6 +31,8 @@ urlpatterns = [
 
     path('excursion/<name>', forts.excursion),
     path('excursion/<name>/make', forts.excursion_make),
+    path('excursion/edit/<name>/<id>', forts.excursion_edit),
+    path('excursion/delete/<name>/<id>', forts.excursion_delete),
     re_path('excursion', forts.excursion),
     re_path('^about', forts.about),
     re_path('', forts.forts),

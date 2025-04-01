@@ -2,25 +2,29 @@
 
     <main>
         <section id="about" class="section">
-            <div class="container">
-                <h2>О журнале</h2>
+            <h2>О журнале</h2>
+            <div class="container" style="max-width: 1200px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
                 <p>Добро пожаловать в наш журнал, посвященный фортам и крепостям по всему миру. Мы исследуем историю, архитектуру и интересные места для путешествий, связанные с фортификациями.</p>
             </div>
         </section>
 
         <section id="articles" class="section">
-            <div class="container">
-                <h2>Последние статьи</h2>
-                {% csrf_token %}
-                {% for fort in forts %}
+            <h2>Последние статьи</h2>
+            {% csrf_token %}
+            {% for fort in forts %}
+            <div class="container" style="max-width: 1200px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
                 <article>
                     <h3>{{ fort.title }}</h3>
                     <img src="{{ fort.img }}" alt="fort" >
                     <p>{{ fort.text }}</p>
-                    <a href="/excursion/{{ fort.title }}">Записаться на экскурсию</a>
+                    <table>
+                        <a href="/excursion/{{ fort.title }}/make">Записаться на экскурсию</a>
+                        <a href="/excursion/{{ fort.title }}/edit" style="margin: auto 10px">Изменить информацию</a>
+                        <a href="/excursion/{{ fort.title }}/delete">Удалить форт</a>
+                    </table>
                 </article>
-                {% endfor %}
             </div>
+            {% endfor %}
         </section>
     </main>
 

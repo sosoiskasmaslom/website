@@ -45,7 +45,9 @@ def auth(request, err = False):
                 return HttpResponseNotFound("Users too much")
             
             if check(data.cleaned_data["password"], user.password):
-                return HttpResponsePermanentRedirect("/main")
+                response = HttpResponse('<a href="/main">Готово</a>')
+                response.set_cookie("email", data.cleaned_data["email"], path="/")
+                return response
             else: return HttpResponsePermanentRedirect("/auth/err")
         else: return render(request, "error.html", context={"error_message": "бля братан сам в ахуе"})
     else: return render(request, "auth.html", {"form": auth_page, "err": err})
@@ -54,6 +56,12 @@ def authr(request):
     return auth(request, True)
 
 def profile(request, email=None):
+    if request.method == "POST":
+        if request.POST.get("action") == "exit":
+            response = HttpResponse('<a href="/main">Готово</a>')
+            response.delete_cookie("email")
+            return response
+        if request.POST.get("action") == "main": return HttpResponsePermanentRedirect("/main")
     if email is None: 
         try:
             email = request.COOKIES["email"]

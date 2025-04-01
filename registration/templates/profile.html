@@ -9,17 +9,19 @@
 <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; color: #333;">
     <h1 style="text-align: center;">Профиль</h1>
 
-    <div style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div style="max-width: 250px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
         <form method="POST">
             {% csrf_token %}
             {% for item in data %}
             <table><strong>{{ item.0 }} - {{ item.1 }}</strong></table>
             {% endfor %}
-            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                Изменить
+            <button name="action" value="exit" type="submit" style="width: 100%; margin: 5px auto; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Выйти
+            </button>
+            <button name="action" value="main" type="submit" style="width: 100%; margin: auto auto; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Главная
             </button>
         </form>
-        <a href="/main">Главная</a>
     </div>
 </body>
 </html>
