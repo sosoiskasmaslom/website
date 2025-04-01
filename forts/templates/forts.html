@@ -1,0 +1,30 @@
+{% include "start.html" %}
+
+    <main>
+        <section id="about" class="section">
+            <div class="container">
+                <h2>О журнале</h2>
+                <p>Добро пожаловать в наш журнал, посвященный фортам и крепостям по всему миру. Мы исследуем историю, архитектуру и интересные места для путешествий, связанные с фортификациями.</p>
+            </div>
+        </section>
+
+        <section id="articles" class="section">
+            <div class="container">
+                <h2>Последние статьи</h2>
+                {% csrf_token %}
+                {% for fort in forts %}
+                <article>
+                    <h3>{{ fort.title }}</h3>
+                    <img src="{{ fort.img }}" alt="fort" >
+                    <p>{{ fort.text }}</p>
+                    <a href="/excursion/{{ fort.title }}">Записаться на экскурсию</a>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    {% include "sign.html"  %}
+
+</body>
+</html>

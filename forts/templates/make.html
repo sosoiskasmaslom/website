@@ -1,0 +1,15 @@
+{% include "start.html" %}
+    <h1>Создание экскурсии {{ name }}</h1>
+
+    <!-- <div style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"> -->
+    <div style="max-width: 400px">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 16px; cursor: pointer;">
+                Создать
+            </button>
+        </form>
+    </div>
+</body>
+{% include "sign.html" %}
