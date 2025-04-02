@@ -38,10 +38,10 @@ urlpatterns = [
     path('excursion/delete/<name>/<id>', forts.excursion_delete),
     re_path('excursion', forts.excursion),
 
-    # path('fort/edit/<name>', forts.fort_edit),
+    path('fort/edit/<id>', forts.fort_edit),
     path('fort/delete/<id>', forts.fort_delete),
     re_path('fort/add', forts.fort_add),
 
     re_path('^about', forts.about),
     re_path('', forts.forts),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

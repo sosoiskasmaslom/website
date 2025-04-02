@@ -1,21 +1,106 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponsePermanentRedirect
-from datetime import datetime
 
 from .models import Fort, Excursion
 from .forms import make_excursion_page, make_fort_page
 
+import os
+
 def forts(request):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
 
     data = [
-        {"id": fort.id, "title": fort.title, "img": fort.image, "text": fort.text}
+        {
+            "id": fort.id,
+            "title": fort.title,
+            # какой же блять пиздец это
+            # это сука не строка, это блядская хуета, сука
+            # это не должно работать, ахуевшая ты тварь
+            "image": '/'.join(fort.image.url.split('/')[2:]) if fort.image else None,
+            "text": fort.text,
+        }
         for fort in Fort.objects.all()
     ]
+    return render(request, "forts.html", {
+        "forts": data,
+        "cookie": "email" in request.COOKIES
+    })
 
-    return render(request, "forts.html", {"forts": data, "cookie": "email" in request.COOKIES})
+def fort_add(request):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
+    if request.method == "POST":
+        form = make_fort_page(request.POST, request.FILES)
+        form.fields['title'].required = True
+        form.fields['text'].required = True
+        if form.is_valid():
+            if not (form.cleaned_data['title'] and form.cleaned_data['text']):
+                form.add_error('title', 'Название и текст не могут быть пустыми')
+                return HttpResponse("Incorrect answers")
+            
+            if Fort.objects.filter(title=form.cleaned_data['title']).exists():
+                form.add_error('title', 'Форт с таким названием уже существует')
+                return HttpResponse("this fort exists")
+            
+            fort = Fort(
+                title=form.cleaned_data['title'],
+                text=form.cleaned_data['text']
+            )            
+            if 'image' in request.FILES:
+                fort.image = request.FILES.get("image")
+            
+            fort.save()
+            return HttpResponsePermanentRedirect('/fort')
+        
+    return render(request, "make.html", {
+        "name": "", 
+        "type": "форта",
+        "form": make_fort_page(), 
+        "cookie": "email" in request.COOKIES
+    })
+
+def fort_edit(request, id):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
+    fort = Fort.objects.get(id=id)
+    if request.method == "POST":
+        form = make_fort_page(request.POST, request.FILES)
+        if form.is_valid():
+            fort.title = form.cleaned_data['title'] if form.cleaned_data['title'] else fort.title
+            fort.text = form.cleaned_data['text'] if form.cleaned_data['text'] else fort.text
+            fort.image = request.FILES.get("image") if request.FILES.get("image") else fort.image
+            
+            fort.save()
+            return HttpResponsePermanentRedirect('/fort')
+        else: return HttpResponse("Incorrect answers")
+
+    return render(request, "make.html", {
+        "name": "", 
+        "type": "форта",
+        "form": make_fort_page(), 
+        "cookie": "email" in request.COOKIES
+    })
+
+def fort_delete(request, id):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
+    fort = Fort.objects.get(id=id)
+    Excursion.objects.filter(title=fort.title).delete()
+
+    try: os.remove(fort.image.path)
+    except FileNotFoundError: pass
+    
+    fort.delete()
+    return HttpResponsePermanentRedirect("/fort")
 
 def excursion(request, name=None):
-
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
     if name is None: 
         data = {}
         for title in set([exc.title for exc in Excursion.objects.all()]):
@@ -37,6 +122,9 @@ def excursion(request, name=None):
     })
 
 def excursion_make(request, name):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
     if request.method == "POST":
         data = make_excursion_page(request.POST)
         if data.is_valid():
@@ -66,6 +154,9 @@ def excursion_make(request, name):
     })
 
 def excursion_edit(request, name, id):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
     if request.method == "POST":
         return excursion_make(request, name)
     
@@ -73,6 +164,9 @@ def excursion_edit(request, name, id):
     return excursion_make(request, name)
 
 def excursion_delete(request, name, id=None):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
     try:
         Excursion.objects.get(
             id=id,
@@ -82,47 +176,8 @@ def excursion_delete(request, name, id=None):
         if id is None: return HttpResponse("Error")
     return HttpResponsePermanentRedirect("/excursion")
 
-def fort_add(request):
-    if request.method == "POST":
-        data = make_fort_page(request.POST, request.FILES)
-        if data.is_valid():
-            try: Excursion.objects.get(title=data.cleaned_data["title"])
-            except Excursion.DoesNotExist: pass
-            else: return HttpResponse("Fort exists at this time")
-
-            fort = Fort()
-            fort.title = data.cleaned_data["title"]
-            # fort.image = data.cleaned_data["image"]
-            fort.text = data.cleaned_data["text"]
-
-            return HttpResponsePermanentRedirect("/fort")
-        else: return HttpResponse("Incorrect answers")
-
-    return render(request, "make.html", {
-        "name": None, 
-        "type": "форта",
-        "form": make_fort_page(), 
-        "cookie": "email" in request.COOKIES
-    })
-
-def fort_delete(request, id):
-    fort = Fort.objects.get(id=id)
-    Excursion.objects.filter(title=fort.title).delete()
-    fort.delete()
-    return HttpResponsePermanentRedirect("/")
-
 def about(request):
+    try: request.COOKIES["email"]
+    except KeyError: return HttpResponsePermanentRedirect("/auth")
+    
     return render(request, "about.html", {"cookie": "email" in request.COOKIES})
-
-def work_with_db():
-    # idk where i have to put it
-    for i in range(1, 13):
-        with open(f"forts/static/texts/fort{i}.txt", 'r') as file:
-            all = file.read()
-            fort = Fort()
-
-            fort.title = all.split(".")[0]
-            fort.text = all[len(fort.title)+2:]
-            fort.image = f"static/images/fort{i}.png"
-
-            fort.save()

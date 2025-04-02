@@ -1,3 +1,5 @@
 .env
 __pycache__
 exec/
+media/forts/*
+forts/static/images/*

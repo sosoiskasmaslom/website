@@ -1,6 +1,6 @@
 from django.db import models
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotFound
   
 from .forms import regist_page, auth_page
 from .models import User
@@ -27,7 +27,7 @@ def registration(request):
             user.save()
             
             # response = HttpResponse('<a href="/main">Готово</a>')
-            response = HttpResponsePermanentRedirect("/main")
+            response = HttpResponsePermanentRedirect("/fort")
             response.set_cookie("email", data.cleaned_data["email"], path="/")
             return response
         else: 
@@ -46,7 +46,7 @@ def auth(request, err = False):
                 return HttpResponseNotFound("Users too much")
             
             if check(data.cleaned_data["password"], user.password):
-                response = HttpResponsePermanentRedirect('/')
+                response = HttpResponsePermanentRedirect('/fort')
                 response.set_cookie("email", data.cleaned_data["email"], path="/")
                 return response
             else: return HttpResponsePermanentRedirect("/auth/err")
@@ -59,10 +59,10 @@ def authr(request):
 def profile(request, email=None):
     if request.method == "POST":
         if request.POST.get("action") == "exit":
-            response = HttpResponsePermanentRedirect('/main')
+            response = HttpResponsePermanentRedirect('/fort')
             response.delete_cookie("email")
             return response
-        if request.POST.get("action") == "main": return HttpResponsePermanentRedirect("/main")
+        if request.POST.get("action") == "main": return HttpResponsePermanentRedirect("/fort")
     if email is None: 
         try:
             email = request.COOKIES["email"]
