@@ -26,7 +26,8 @@ def registration(request):
 
             user.save()
             
-            response = HttpResponse('<a href="/main">Готово</a>')
+            # response = HttpResponse('<a href="/main">Готово</a>')
+            response = HttpResponsePermanentRedirect("/main")
             response.set_cookie("email", data.cleaned_data["email"], path="/")
             return response
         else: 
@@ -45,7 +46,7 @@ def auth(request, err = False):
                 return HttpResponseNotFound("Users too much")
             
             if check(data.cleaned_data["password"], user.password):
-                response = HttpResponse('<a href="/main">Готово</a>')
+                response = HttpResponsePermanentRedirect('/')
                 response.set_cookie("email", data.cleaned_data["email"], path="/")
                 return response
             else: return HttpResponsePermanentRedirect("/auth/err")
@@ -58,7 +59,7 @@ def authr(request):
 def profile(request, email=None):
     if request.method == "POST":
         if request.POST.get("action") == "exit":
-            response = HttpResponse('<a href="/main">Готово</a>')
+            response = HttpResponsePermanentRedirect('/main')
             response.delete_cookie("email")
             return response
         if request.POST.get("action") == "main": return HttpResponsePermanentRedirect("/main")

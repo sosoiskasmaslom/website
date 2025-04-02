@@ -20,6 +20,9 @@ from django.urls import path, re_path
 from forts import views as forts
 from registration import views as reg
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -34,6 +37,11 @@ urlpatterns = [
     path('excursion/edit/<name>/<id>', forts.excursion_edit),
     path('excursion/delete/<name>/<id>', forts.excursion_delete),
     re_path('excursion', forts.excursion),
+
+    # path('fort/edit/<name>', forts.fort_edit),
+    path('fort/delete/<id>', forts.fort_delete),
+    re_path('fort/add', forts.fort_add),
+
     re_path('^about', forts.about),
     re_path('', forts.forts),
 ]

@@ -2,7 +2,7 @@ from django.db import models
 
 class Fort(models.Model):
     title = models.CharField(max_length=50)
-    image = models.FileField()
+    image = models.ImageField(upload_to='static/images')
     text = models.TextField()
 
 class Excursion(models.Model):

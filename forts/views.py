@@ -3,12 +3,12 @@ from django.http import HttpResponse, HttpResponsePermanentRedirect
 from datetime import datetime
 
 from .models import Fort, Excursion
-from .forms import make_excursion_page
+from .forms import make_excursion_page, make_fort_page
 
 def forts(request):
 
     data = [
-        {"title": fort.title, "img": fort.image, "text": fort.text}
+        {"id": fort.id, "title": fort.title, "img": fort.image, "text": fort.text}
         for fort in Fort.objects.all()
     ]
 
@@ -60,6 +60,7 @@ def excursion_make(request, name):
 
     return render(request, "make.html", {
         "name": name, 
+        "type": "экскурсии",
         "form": make_excursion_page(), 
         "cookie": "email" in request.COOKIES
     })
@@ -71,14 +72,44 @@ def excursion_edit(request, name, id):
     excursion_delete(request, name, id)
     return excursion_make(request, name)
 
-def excursion_delete(request, name, id):
-    excursion = Excursion.objects.get(
-        id=id,
-        title=name 
-    )
-    excursion.delete()
-
+def excursion_delete(request, name, id=None):
+    try:
+        Excursion.objects.get(
+            id=id,
+            title=name 
+        ).delete()
+    except Excursion.DoesNotExist:
+        if id is None: return HttpResponse("Error")
     return HttpResponsePermanentRedirect("/excursion")
+
+def fort_add(request):
+    if request.method == "POST":
+        data = make_fort_page(request.POST, request.FILES)
+        if data.is_valid():
+            try: Excursion.objects.get(title=data.cleaned_data["title"])
+            except Excursion.DoesNotExist: pass
+            else: return HttpResponse("Fort exists at this time")
+
+            fort = Fort()
+            fort.title = data.cleaned_data["title"]
+            # fort.image = data.cleaned_data["image"]
+            fort.text = data.cleaned_data["text"]
+
+            return HttpResponsePermanentRedirect("/fort")
+        else: return HttpResponse("Incorrect answers")
+
+    return render(request, "make.html", {
+        "name": None, 
+        "type": "форта",
+        "form": make_fort_page(), 
+        "cookie": "email" in request.COOKIES
+    })
+
+def fort_delete(request, id):
+    fort = Fort.objects.get(id=id)
+    Excursion.objects.filter(title=fort.title).delete()
+    fort.delete()
+    return HttpResponsePermanentRedirect("/")
 
 def about(request):
     return render(request, "about.html", {"cookie": "email" in request.COOKIES})
