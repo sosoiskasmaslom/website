@@ -1,36 +1,32 @@
-{% include "start.html" %}
+{% extends "base.html" %}
+{% block title %}Forts{% endblock title %}
+{% block name %}Интернет-журнал о фортах{% endblock name %}
+{% block content %}
+<section id="about" class="section">
+    <h2>О журнале</h2>
+    <div class="container" style="max-width: 1200px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+        <p>Добро пожаловать в наш журнал, посвященный фортам и крепостям по всему миру. Мы исследуем историю, архитектуру и интересные места для путешествий, связанные с фортификациями.</p>
+    </div>
+</section>
 
-    <main>
-        <section id="about" class="section">
-            <h2>О журнале</h2>
-            <div class="container" style="max-width: 1200px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
-                <p>Добро пожаловать в наш журнал, посвященный фортам и крепостям по всему миру. Мы исследуем историю, архитектуру и интересные места для путешествий, связанные с фортификациями.</p>
-            </div>
-        </section>
-
-        <section id="articles" class="section">
-            <h2>Последние статьи</h2>
-            {% csrf_token %}
-            {% for fort in forts %}
-            <div class="container" style="max-width: 1200px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
-                <article>
-                    <h3>{{ fort.title }}</h3>
-                    <img src="{{ fort.image }}" alt="{{ fort.image }}">
-                    <p>{{ fort.text }}</p>
-                    {% if cookie %}
-                    <table>
-                        <a href="/excursion/{{ fort.title }}/make">Записаться на экскурсию</a>
-                        <a href="/fort/edit/{{ fort.id }}" style="margin: auto 10px">Изменить информацию</a>
-                        <a href="/fort/delete/{{ fort.id }}">Удалить форт</a>
-                    </table>
-                    {% endif %}
-                </article>
-            </div>
-            {% endfor %}
-        </section>
-    </main>
-
-    {% include "sign.html"  %}
-
-</body>
-</html>
+<section id="articles" class="section">
+    <h2>Последние статьи</h2>
+    {% csrf_token %}
+    {% for fort in forts %}
+    <div class="container" style="max-width: 1200px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+        <article>
+            <h3>{{ fort.title }}</h3>
+            <img src="{{ fort.image }}" alt="{{ fort.image }}" width="800">
+            <p>{{ fort.text }}</p>
+            {% if cookie %}
+            <table>
+                <a href="/excursion/{{ fort.title }}/make">Записаться на экскурсию</a>
+                <a href="/fort/edit/{{ fort.id }}" style="margin: auto 10px">Изменить информацию</a>
+                <a href="/fort/delete/{{ fort.id }}">Удалить форт</a>
+            </table>
+            {% endif %}
+        </article>
+    </div>
+    {% endfor %}
+</section>
+{% endblock content %}

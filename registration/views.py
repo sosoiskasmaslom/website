@@ -26,13 +26,12 @@ def registration(request):
 
             user.save()
             
-            # response = HttpResponse('<a href="/main">Готово</a>')
             response = HttpResponsePermanentRedirect("/fort")
             response.set_cookie("email", data.cleaned_data["email"], path="/")
             return response
         else: 
-            return render(request, "error.html", context={"error_message": "бля братан сам в ахуе"})
-    else: return render(request, "registration.html", {"form": regist_page()})
+            return HttpResponsePermanentRedirect("/reg/invalid_data")
+    else: return render(request, "auth.html", {"title": "Зарегистрироваться", "form": regist_page()})
 
 def auth(request, err = False):
     if request.method == "POST":
@@ -50,8 +49,8 @@ def auth(request, err = False):
                 response.set_cookie("email", data.cleaned_data["email"], path="/")
                 return response
             else: return HttpResponsePermanentRedirect("/auth/err")
-        else: return render(request, "error.html", context={"error_message": "бля братан сам в ахуе"})
-    else: return render(request, "auth.html", {"form": auth_page, "err": err})
+        else: return HttpResponsePermanentRedirect("/auth/invalid_data")
+    else: return render(request, "auth.html", {"title": "Войти", "form": auth_page, "err": err})
 
 def authr(request):
     return auth(request, True)

@@ -2,13 +2,32 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponsePermanentRedirect
 
 from .models import Fort, Excursion
-from .forms import make_excursion_page, make_fort_page
+from main.models import Adj
+from .forms import make_excursion_page, make_fort_page, search
 
 import os
+from random import choice
 
-def forts(request):
-    try: request.COOKIES["email"]
-    except KeyError: return HttpResponsePermanentRedirect("/auth")
+def fort(request):
+
+    if request.method == "POST":
+        search_text = request.POST.get("search", "")
+        if search_text:
+            forts = Fort.objects.filter(title__icontains=search_text)
+            data = [
+                {
+                    "id": fort.id,
+                    "title": fort.title,
+                    "image": '/'.join(fort.image.url.split('/')[2:]) if fort.image else None,
+                    "text": fort.text,
+                }
+                for fort in forts
+            ]
+            return render(request, "forts.html", {
+                "search": search(),
+                "forts": data,
+                "cookie": "email" in request.COOKIES
+            })
 
     data = [
         {
@@ -22,8 +41,19 @@ def forts(request):
         }
         for fort in Fort.objects.all()
     ]
+    adj_data = [
+            {
+            "title": adj.title,
+            "link": adj.link,
+            "image": '/'.join(adj.image.url.split('/')[2:]) if adj.image else None,
+            "text": adj.text,
+        } for adj in Adj.objects.all()
+    ]
+
     return render(request, "forts.html", {
+        "search": search(),
         "forts": data,
+        "adjs": adj_data,
         "cookie": "email" in request.COOKIES
     })
 
@@ -136,11 +166,12 @@ def excursion_make(request, name):
             except Excursion.DoesNotExist: pass
             else: return HttpResponse("Excursion exists at this time")
     
-            excursion = Excursion()
-            excursion.title = name
-            excursion.meet_place = data.cleaned_data["meet_place"]
-            excursion.time = data.cleaned_data["time"]
-            excursion.count = data.cleaned_data["count"]
+            excursion = Excursion(
+                title = name,
+                meet_place = data.cleaned_data["meet_place"],
+                time = data.cleaned_data["time"],
+                count = data.cleaned_data["count"],
+            )
 
             excursion.save()
             return HttpResponsePermanentRedirect("/excursion")
@@ -175,9 +206,3 @@ def excursion_delete(request, name, id=None):
     except Excursion.DoesNotExist:
         if id is None: return HttpResponse("Error")
     return HttpResponsePermanentRedirect("/excursion")
-
-def about(request):
-    try: request.COOKIES["email"]
-    except KeyError: return HttpResponsePermanentRedirect("/auth")
-    
-    return render(request, "about.html", {"cookie": "email" in request.COOKIES})

@@ -1,36 +1,33 @@
-{% include "start.html" %}
-    <main>
-        <section id="articles" class="section">
-            <div class="container">
-                <h2>Запись на экскурсии</h2>
-                {% csrf_token %}
-                {% for title, excursions in data.items %}
-                <h3>{{ title }}</h3>
-                {% for excursion in excursions %}
-                <div style="max-width: 400px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
-                    <p>Место встречи - {{ excursion.meet_place }}</p>
-                    <p>Количество человек - {{ excursion.count }}</p>
-                    <p>{{ excursion.time }}</p>
-                    <table>
-                    <a href="/excursion/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                        Записаться
-                    </a>
-                    <a href="/excursion/edit/{{ title }}/{{ excursion.id }}" style="width: 100%; margin: auto 10px; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                        Изменить
-                    </a>
-                    <a href="/excursion/delete/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                        Удалить
-                    </a>
-                    </table>
-                </div>
-                {% endfor %}
-                <a href="/excursion/{{ title }}/make">Создать экскурсию</a>
-                {% endfor %}
-            </div>
-        </section>
-    </main>
-
-    {% include "sign.html"  %}
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Forts - excursion{% endblock title %}
+{% block name %}Интернет-журнал о фортах{% endblock name %}
+{% block content %}
+<section id="articles" class="section">
+    <div class="container">
+        <h2>Запись на экскурсии</h2>
+        {% csrf_token %}
+        {% for title, excursions in data.items %}
+        <h3>{{ title }}</h3>
+        {% for excursion in excursions %}
+        <div style="max-width: 400px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+            <p>Место встречи - {{ excursion.meet_place }}</p>
+            <p>Количество человек - {{ excursion.count }}</p>
+            <p>{{ excursion.time|date:"d.m.Y H:i" }}</p>
+            <table>
+            <a href="/excursion/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                Записаться
+            </a>
+            <a href="/excursion/edit/{{ title }}/{{ excursion.id }}" style="width: 100%; margin: auto 10px; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                Изменить
+            </a>
+            <a href="/excursion/delete/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                Удалить
+            </a>
+            </table>
+        </div>
+        {% endfor %}
+        <a href="/excursion/{{ title }}/make">Создать экскурсию</a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock content %}

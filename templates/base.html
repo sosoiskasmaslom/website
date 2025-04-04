@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-color: #ededed;">
+    <table>
+        <td>
+            <header>
+                <div class="container" style="max-width: 1000px; margin: 10px 1px; padding: 20px; background-color: #f9f9f9; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                    <h1>{% block name %}{% endblock name %}</h1>
+                    <nav>
+                        <ul>
+                            <li><a href="/fort">Главная</a></li>
+                            <li><a href="/about">О журнале</a></li>
+                            <li><a href="/excursion">К экскурсиям</a></li>
+                            <li><a href="/fort/add">Добавить форт</a></li>                    
+                            {% if cookie %}
+                            <li><a href="/profile">Профиль</a></li>  
+                            {% else %}
+                            <li><a href="/reg">Зарегистрироваться</a></li>
+                            <li><a href="/auth">Уже есть аккаунт</a></li>
+                            {% endif %}
+                            {% if search %}
+                            <li>
+                                <form method="POST" action="/search">
+                                    {% csrf_token %}
+                                    <table>
+                                        <td>{{ search }}</td>
+                                        <td><button type="submit">Поиск</button></td>
+                                    </table>
+                                </form>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                <main style="max-width: 1000px; margin: 10px 1px; padding: 20px; background-color: #f9f9f9; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                    {% block content %}
+                    {% endblock content %}
+                </main>
+            </header>
+        </td>
+        
+        {% if adjs %}
+        <td style="vertical-align: top;">
+            {% for adj in adjs %}
+            <figure style="text-align: center; max-width: 500px; margin: 10px 5px; padding: 10px; background-color: #f9f9f9; border-radius: 5px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <img src="{{ adj.image }}" alt="{{ adj.image }}" width="300" style="margin: 10px 0px">
+                <h3>{{ adj.title }}</h3>
+                <table style="text-align: center; margin: 0 auto;">
+                    <td><p>{{ adj.text }}</p></td>
+                    <td><a href="{{ adj.link }}">Перейти по ссылке</a></td>
+                </table>
+            </figure>
+            {% endfor %}
+        </td>
+        {% endif %}
+    </table>
+    <footer>
+        <div class="container">
+            <p>&copy; Работу выполнял Порохин Иван, студент группы 05КБ-24. Все права защищены.</p>
+        </div>
+    </footer>
+</body>

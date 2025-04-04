@@ -17,15 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from forts import views as forts
-from registration import views as reg
-
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+from main import views as main
+from forts import views as forts
+from registration import views as reg
 
+urlpatterns = [
+    path('<back>/invalid_data', main.invalid_data),
     path('profile/<str:email>', reg.profile),
     path('auth/err', reg.authr),   
     re_path('^profile', reg.profile),
@@ -41,7 +41,12 @@ urlpatterns = [
     path('fort/edit/<id>', forts.fort_edit),
     path('fort/delete/<id>', forts.fort_delete),
     re_path('fort/add', forts.fort_add),
+    re_path('search', forts.fort),
+    re_path('fort', forts.fort),
 
-    re_path('^about', forts.about),
-    re_path('', forts.forts),
+    path('admin/', admin.site.urls),
+    path('adj_add', main.adj_add),
+    re_path('^about', main.about),
+
+    re_path('', main.custom_404),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

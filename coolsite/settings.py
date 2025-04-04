@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'registration',
-    'forts'
+    'forts',
+    'main',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,8 @@ ROOT_URLCONF = 'coolsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': ["templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +81,7 @@ WSGI_APPLICATION = 'coolsite.wsgi.application'
 DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'test',
+    'NAME': 'website',
     'USER': 'pyth',
     'PASSWORD': 'pythonisbetter',
     'HOST': 'localhost',
