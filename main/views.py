@@ -43,6 +43,9 @@ def about(request):
     
     return render(request, "about.html", {"cookie": "email" in request.COOKIES})
 
+def to_main(request):
+    return HttpResponsePermanentRedirect("/fort")
+
 def custom_404(request):
     return render(request, '404.html', status=404)
 

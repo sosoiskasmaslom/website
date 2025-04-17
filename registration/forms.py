@@ -39,7 +39,7 @@ class regist_page(forms.Form):
     )
     birth_date = forms.DateField(
         label="Дата рождения",
-        widget=forms.DateInput(attrs={'placeholder': 'Формат гггг.мм.дд'}),
+        widget=forms.DateInput(attrs={'placeholder': 'Формат гггг-мм-дд'}),
         error_messages={
             "required": "Введите дату рождения",
             "invalid": "Некорректная дата",
