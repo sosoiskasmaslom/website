@@ -8,4 +8,3 @@ class User(models.Model):
     email = models.EmailField()
     password = models.BinaryField(max_length=100)
     birth_date = models.DateField()
-    # log_date = models.DateTimeField()

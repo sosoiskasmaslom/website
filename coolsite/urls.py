@@ -38,15 +38,16 @@ urlpatterns = [
     path('excursion/delete/<name>/<id>', forts.excursion_delete),
     re_path('excursion', forts.excursion),
 
+    re_path('search', forts.fort),
     path('fort/edit/<id>', forts.fort_edit),
     path('fort/delete/<id>', forts.fort_delete),
     re_path('fort/add', forts.fort_add),
-    re_path('search', forts.fort),
-    re_path('fort', forts.fort),
+    re_path('fort/', main.to_main),
+    path('fort', forts.fort),
 
     path('admin/', admin.site.urls),
     path('adj_add', main.adj_add),
     re_path('^about', main.about),
 
-    re_path('', main.custom_404),
+    re_path('', main.to_main),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

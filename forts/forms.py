@@ -11,7 +11,7 @@ class make_excursion_page(forms.Form):
     )
     time = forms.DateTimeField(
         label="Дата проведения",
-        widget=forms.DateInput(attrs={'placeholder': 'Формат гггг.мм.дд чч:мм'}),
+        widget=forms.DateInput(attrs={'placeholder': 'Формат гггг-мм-дд чч:мм'}),
         error_messages={
             "required": "Введите дату проведения экскурсии",
             "invalid": "Некорректная дата",
@@ -40,7 +40,7 @@ class make_fort_page(forms.Form):
     image = forms.ImageField(
         label="Изображение форта",
         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-        required=False
+        required=False,
     )
     text = forms.CharField(
         label="Описание",

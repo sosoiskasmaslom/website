@@ -1,0 +1,4 @@
+#!/bin/bash
+WORKERS=3
+BIND=127.0.0.1:8000
+exec gunicorn coolsite.wsgi:application --workers $WORKERS --bind $BIND

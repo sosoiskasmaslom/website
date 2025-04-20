@@ -17,10 +17,10 @@ def registration(request):
 
             user = User()
 
-            user.first_name = encrypt(data.cleaned_data["first_name"])
-            user.last_name = encrypt(data.cleaned_data["last_name"])
-            user.patronymic = encrypt(data.cleaned_data["patronymic"])
-            user.email = encrypt(data.cleaned_data["email"])
+            user.first_name = (data.cleaned_data["first_name"])
+            user.last_name = (data.cleaned_data["last_name"])
+            user.patronymic =(data.cleaned_data["patronymic"])
+            user.email = (data.cleaned_data["email"])
             user.password = fast_hash(data.cleaned_data["password"])
             user.birth_date = data.cleaned_data["birth_date"]
 
@@ -38,7 +38,7 @@ def auth(request, err = False):
         data = auth_page(request.POST)
         if data.is_valid():
             try:
-                user = User.objects.get(email=encrypt(data.cleaned_data["email"]))
+                user = User.objects.get(email=(data.cleaned_data["email"]))
             except User.DoesNotExist:
                 return HttpResponsePermanentRedirect("/auth/err")
             except models.MultipleObjectsReturned:
@@ -68,14 +68,14 @@ def profile(request, email=None):
         except KeyError:
             return HttpResponseNotFound("<h1>Page not found</h1>")
     try:
-        user = User.objects.get(email=encrypt(email))
+        user = User.objects.get(email=(email))
     except User.DoesNotExist: 
         return HttpResponseNotFound("<h1>User not found</h1>")
     data = [
-        ["Имя", decrypt(user.first_name)],
-        ["Фамилия", decrypt(user.last_name)],
-        ["Отчество", decrypt(user.patronymic) if user.patronymic else "*отсутствует*"],
-        ["Почта", decrypt(user.email)],
+        ["Имя", (user.first_name)],
+        ["Фамилия", (user.last_name)],
+        ["Отчество", (user.patronymic) if user.patronymic else "*отсутствует*"],
+        ["Почта", (user.email)],
         ["Дата рождения", user.birth_date],
     ]
     return render(request, "profile.html", {"data": data})

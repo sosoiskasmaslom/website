@@ -12,6 +12,7 @@
         <div style="max-width: 400px; margin: 10px 1px; padding: 20px; background-color: #fff; border-radius: 16px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
             <p>Место встречи - {{ excursion.meet_place }}</p>
             <p>Количество человек - {{ excursion.count }}</p>
+	    <p>Организатор - {{ excursion.family }} {{ excursion.name }}</p>
             <p>{{ excursion.time|date:"d.m.Y H:i" }}</p>
             <table>
             <a href="/excursion/{{ title }}/{{ excursion.id }}" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">

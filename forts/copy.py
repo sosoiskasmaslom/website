@@ -82,7 +82,7 @@ def fort_add(request, id=None):
             )
             if 'image' in request.FILES:
                 fort.image = request.FILES.get("image")
-            elif id is not None:
+            if id is not None:
                 fort.image = Fort.objects.get(id=id).image
 
             fort.save()
